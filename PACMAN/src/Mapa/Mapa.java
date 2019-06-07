@@ -16,6 +16,10 @@ public class Mapa {
     private static Bloco[] tiles;
     private static int WIDTH, HEIGHT;
     private static final int TILE_SIZE = 16;
+    public static Blinky blink;
+    public static Inky inki;
+    public static Pinky pinky;
+    public static Clide clide;
 
     public Mapa(String path) {
         try {
@@ -35,6 +39,10 @@ public class Mapa {
                             //Chao
                             tiles[xx + (yy * WIDTH)] = new Chao(xx * 16, yy * 16, Bloco.TILE_FLOOR);
                             break;
+                        case 0xFF2636ff:
+                            //Bar
+                            tiles[xx + (yy * WIDTH)] = new Chao(xx * 16, yy * 16, Bloco.BAR);
+                            break;
                         case 0xFF0013FF:
                             //Parede
                             if(Jogo.getFase() == 1){
@@ -47,25 +55,25 @@ public class Mapa {
                             break;
                         case 0xffff0000:
                             //Blinky
-                            Fantasma blink = new Fantasma(xx * 16, yy * 16, 16, 16, Objetos.BLINKY);
+                            blink = new Blinky(xx * 16, yy * 16, 16, 16, Objetos.BLINKY);
                             Jogo.getObjJogo().add(blink);
                             Jogo.getFantasmas().add(blink);
                             break;
                         case 0xffff945a:
                             //Clide
-                            Fantasma clide = new Fantasma(xx * 16, yy * 16, 16, 16, Objetos.CLIDE);
+                            clide = new Clide(xx * 16, yy * 16, 16, 16, Objetos.CLIDE);
                             Jogo.getObjJogo().add(clide);
                             Jogo.getFantasmas().add(clide);
                             break;
                         case 0xff5cdbff:
                             //Inki
-                            Fantasma inki = new Fantasma(xx * 16, yy * 16, 16, 16, Objetos.INKY);
+                            inki = new Inky(xx * 16, yy * 16, 16, 16, Objetos.INKY);
                             Jogo.getObjJogo().add(inki);
                             Jogo.getFantasmas().add(inki);
                             break;
                         case 0xffff00ec:
                             //Pinky
-                            Fantasma pinky = new Fantasma(xx * 16, yy * 16, 16, 16, Objetos.PINKY);
+                            pinky = new Pinky(xx * 16, yy * 16, 16, 16, Objetos.PINKY);
                             Jogo.getObjJogo().add(pinky);
                             Jogo.getFantasmas().add(pinky);
                             break;

@@ -15,11 +15,14 @@ public class Player extends Objetos {
 //    private int x;
 //    private int y;
 //    private double velocidadeX = 0.6, velocidadeY = 0.6;
+    private int frame = 0;
     private boolean up, down, right, left;
     private double velocidade = 1.0;
     private int vidas = 3;
     private int score = 0;
-    private boolean bonus = false;
+    private double dirX;
+    private double dirY;
+    private static boolean bonus = false;
     private String novo = "";
     private String ant = "";
     private int timer = 0;
@@ -37,42 +40,65 @@ public class Player extends Objetos {
                     this.score += 10;
                     Jogo.getObjJogo().remove(atual);
                 }
-            } 
-            
+            }
+
             if (atual instanceof Pilula) {
                 if (Objetos.isColliding(this, atual)) {
                     this.score += 10;
                     bonus = true;
-                    timer=0;
+                    timer = 0;
                     Jogo.getObjJogo().remove(atual);
                 }
             }
-            
+
             if (atual instanceof Fruta) {
                 if (Objetos.isColliding(this, atual)) {
                     this.score += 100;
                     Jogo.getObjJogo().remove(atual);
                 }
             }
-            
-            if (atual instanceof Fantasma && bonus) {
+
+            if (atual instanceof Blinky && bonus) {
                 if (Objetos.isColliding(this, atual)) {
                     this.score += 200;
                     Jogo.getObjJogo().remove(atual);
-                    Jogo.getObjJogo().add(new Fantasma(160, 200, 16, 16, Objetos.BLINKY));
+                    Jogo.getObjJogo().add(new Blinky(160, 200, 16, 16, Objetos.BLINKY));
                 }
-                if(timer >= 80){
-                    bonus = false;
+            }
+            if (atual instanceof Clide && bonus) {
+                if (Objetos.isColliding(this, atual)) {
+                    this.score += 200;
+                    Jogo.getObjJogo().remove(atual);
+                    Jogo.getObjJogo().add(new Clide(160, 200, 16, 16, Objetos.CLIDE));
                 }
             }
             
+             if (atual instanceof Pinky && bonus) {
+                if (Objetos.isColliding(this, atual)) {
+                    this.score += 200;
+                    Jogo.getObjJogo().remove(atual);
+                    Jogo.getObjJogo().add(new Pinky(160, 200, 16, 16, Objetos.PINKY));
+                }
+            }
+             
+             if (atual instanceof Inky && bonus) {
+                if (Objetos.isColliding(this, atual)) {
+                    this.score += 200;
+                    Jogo.getObjJogo().remove(atual);
+                    Jogo.getObjJogo().add(new Inky(160, 200, 16, 16, Objetos.INKY));
+                }
+            }
+            if (timer >= 80) {
+                bonus = false;
+            }
+
             //Gameover
             if (atual instanceof Fantasma && !bonus) {
                 if (Objetos.isColliding(this, atual)) {
-                    //Jogo.GameOver();
+                    Jogo.GameOver();
                 }
             }
-        }  
+        }
         timer++;
     }
 
@@ -86,59 +112,104 @@ public class Player extends Objetos {
 //            this.x += velocidadeX;
 //            this.y += velocidadeY;
 //        }
-        
-        if(left && Mapa.colide((int)(x - velocidade),this.getY())){
-            x-=velocidade;
-            
-            if(ant.equals("up"))
+
+        if (left && Mapa.colide((int) (x - velocidade), this.getY())) {
+            x -= velocidade;
+            dirX = -(velocidade * 32);
+            dirY = 0;
+
+            if (ant.equals("up")) {
                 up = false;
-            if(ant.equals("down"))
+            }
+            if (ant.equals("down")) {
                 down = false;
+            }
         }
-        if(right && Mapa.colide((int)(x + velocidade), this.getY())){
-            x+=velocidade;
-            
-            if(ant.equals("up"))
+        if (right && Mapa.colide((int) (x + velocidade), this.getY())) {
+            x += velocidade;
+            dirX = (velocidade * 32);
+            dirY = 0;
+
+            if (ant.equals("up")) {
                 up = false;
-            if(ant.equals("down"))
+            }
+            if (ant.equals("down")) {
                 down = false;
+            }
         }
-        if(up && Mapa.colide(this.getX(),(int)(y-velocidade))){
-            y-=velocidade;
-            
-            if(ant.equals("left"))
+        if (up && Mapa.colide(this.getX(), (int) (y - velocidade))) {
+            y -= velocidade;
+            dirX = 0;
+            dirY = -(velocidade * 32);
+
+            if (ant.equals("left")) {
                 left = false;
-            if(ant.equals("right"))
+            }
+            if (ant.equals("right")) {
                 right = false;
+            }
         }
-        if(down && Mapa.colide(this.getX(),(int)(y+velocidade))){
-            y+=velocidade;
-            
-            if(ant.equals("left"))
+        if (down && Mapa.colide(this.getX(), (int) (y + velocidade))) {
+            y += velocidade;
+            dirX = 0;
+            dirY = (velocidade * 32);
+
+            if (ant.equals("left")) {
                 left = false;
-            if(ant.equals("right"))
+            }
+            if (ant.equals("right")) {
                 right = false;
+            }
         }
-            
+
         coletaItem();
-        
+
         //Verifica margens, caso chegue ao limite de uma aparece do outor lado
         if (x > Jogo.getLargura() - 18) {
             this.x = 0;
         } else if (this.x < 0) {
             x = Jogo.getLargura() - 18;
         }
-        
+
     }
-    
+
     public void render(Graphics g) {
-        g.drawImage(Jogo.spritesheet.getSprite(80,0,16,16), this.getX(), this.getY(), null);
+        if (left) {
+            if (frame % 20 == 0) {
+                g.drawImage(Jogo.spritesheet.getSprite(96, 0, 16, 16), this.getX(), this.getY(), null);
+            } else {
+                g.drawImage(Jogo.spritesheet.getSprite(64, 0, 16, 16), this.getX(), this.getY(), null);
+            }
+        } else if (right) {
+            if (frame % 20 == 0) {
+                g.drawImage(Jogo.spritesheet.getSprite(80, 0, 16, 16), this.getX(), this.getY(), null);
+            } else {
+                g.drawImage(Jogo.spritesheet.getSprite(64, 0, 16, 16), this.getX(), this.getY(), null);
+            }
+        } else if (up) {
+            if (frame % 20 == 0) {
+                g.drawImage(Jogo.spritesheet.getSprite(112, 0, 16, 16), this.getX(), this.getY(), null);
+            } else {
+                g.drawImage(Jogo.spritesheet.getSprite(64, 0, 16, 16), this.getX(), this.getY(), null);
+            }
+        } else if (down) {
+            if (frame % 20 == 0) {
+                g.drawImage(Jogo.spritesheet.getSprite(64, 16, 16, 16), this.getX(), this.getY(), null);
+            } else {
+                g.drawImage(Jogo.spritesheet.getSprite(64, 0, 16, 16), this.getX(), this.getY(), null);
+            }
+        } else {
+            g.drawImage(Jogo.spritesheet.getSprite(64, 0, 16, 16), this.getX(), this.getY(), null);
+        }
+        if (frame > 1000 * 30) {
+            frame = 0;
+        }
+        frame++;
     }
-    
+
 //    public int getX() {
 //        return x;
 //    }
-
 //    public double getVelocidadeX() {
 //        return velocidadeX;
 //    }
@@ -154,7 +225,6 @@ public class Player extends Objetos {
 //    public void setVelocidadeY(double velocidadeY) {
 //        this.velocidadeY = velocidadeY;
 //    }
-    
 //    public void setX(int x) {
 //        this.x = x;
 //    }
@@ -166,7 +236,6 @@ public class Player extends Objetos {
 //    public void setY(int y) {
 //        this.y = y;
 //    }
-
     public int getScore() {
         return score;
     }
@@ -182,36 +251,51 @@ public class Player extends Objetos {
     public void setVidas(int vidas) {
         this.vidas = vidas;
     }
-    
-    public boolean getBonus(){
+
+    public boolean getBonus() {
+        return bonus;
+    }
+
+    public void setUp(boolean up) {
+        this.up = up;
+    }
+
+    public void setDown(boolean down) {
+        this.down = down;
+    }
+
+    public void setRight(boolean right) {
+        this.right = right;
+    }
+
+    public void setLeft(boolean left) {
+        this.left = left;
+    }
+
+    public void setNovo(String novo) {
+        this.novo = novo;
+    }
+
+    public String getNovo() {
+        return novo;
+    }
+
+    public void setAnt(String ant) {
+        this.ant = ant;
+    }
+
+    public double getDirX() {
+        return dirX;
+    }
+
+    public double getDirY() {
+        return dirY;
+    }
+
+    public static boolean isBonus() {
         return bonus;
     }
     
-    public void setUp(boolean up){
-        this.up = up;
-    }
     
-    public void setDown(boolean down){
-        this.down = down;
-    }
-    
-    public void setRight(boolean right){
-        this.right = right;
-    }
-    
-    public void setLeft(boolean left){
-        this.left = left;
-    }
-    
-    public void setNovo(String novo){
-        this.novo = novo;
-    }
-    
-    public String getNovo(){
-        return novo;
-    }
-    
-    public void setAnt(String ant){
-        this.ant = ant;
-    }
+
 }

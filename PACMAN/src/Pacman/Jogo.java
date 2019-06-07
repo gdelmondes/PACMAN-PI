@@ -36,8 +36,9 @@ public class Jogo extends Canvas implements Runnable, KeyListener{
     private static boolean isRunning = true;
     private static final int largura = 21 * 16;
     private static final int altura = 27 * 16 + 32;
-    private static final int SCALE = 1; //Manter essa variavel, ela eh poderosissima para mudar o tamanho do game
+    private static final int SCALE = 2; //Manter essa variavel, ela eh poderosissima para mudar o tamanho do game
     private static int fase = 1;
+    public static boolean gameover;
     
     private BufferedImage image;
     
@@ -64,7 +65,7 @@ public class Jogo extends Canvas implements Runnable, KeyListener{
         spritesheet = new Spritesheet("/res/spritesheet.png");
         pacman = new Player(0, 0, 16, 16, spritesheet.getSprite(32,0,16,16));
         objJogo.add(pacman);
-        mapa = new Mapa("/res/level3.png");
+        mapa = new Mapa("/res/level1.png");
     }
     
     public void initFrame(){
@@ -98,6 +99,7 @@ public class Jogo extends Canvas implements Runnable, KeyListener{
     }
     
     public void tick(){
+        if(!gameover){
         for (int i = 0; i < objJogo.size(); i++) {
             Objetos e = objJogo.get(i);
             e.tick();
@@ -112,7 +114,7 @@ public class Jogo extends Canvas implements Runnable, KeyListener{
         if(rand.nextInt(2500) < 5 && objJogo.contains(fruit)){
             objJogo.remove(fruit);
         }
-        
+        }
         
     }
     
@@ -130,23 +132,15 @@ public class Jogo extends Canvas implements Runnable, KeyListener{
         
         //Renderiza o mapa
         mapa.render(g);
-        
+        if(!gameover){
         //Renderiza as entidades da classe objetos, pontos, pacman etc
         Collections.sort(objJogo, Objetos.nodeSorter);
 	for (int i = 0; i < objJogo.size(); i++) {
             Objetos e = objJogo.get(i);
             e.render(g);
         }
-        
-        //Desenha UI(Score e vidas)
-        g.setColor(Color.white);
-        g.drawString("SCORE: " + pacman.getScore(), 4, altura - 12);
-        g.drawString("LIVES: " + pacman.getVidas(), largura - 52, altura - 12);
-        
-        //Printa se o bonus estiver ativo
-        if(pacman.getBonus())
-            g.drawString("BONUS-ON", 140, altura - 12);
-        
+        }
+        UI.render(g);
         g.dispose(); 
         g = bs.getDrawGraphics();
         g.drawImage(image, 0, 0, largura * SCALE, altura * SCALE, null);
@@ -274,7 +268,42 @@ public class Jogo extends Canvas implements Runnable, KeyListener{
     }
     
     public static void GameOver() {
-        isRunning = false;
+        /*
+            Falta resetar os fantasmas e pacman para sua posicao inicial,
+            decrementar uma vida
+        */
+        for (int i = 0; i < Jogo.getObjJogo().size(); i++) {
+            Objetos atual = Jogo.getObjJogo().get(i);
+            if (atual instanceof Blinky) {
+                Jogo.getObjJogo().remove(atual);
+            } 
+            
+            if (atual instanceof Inky) {
+                Jogo.getObjJogo().remove(atual);
+            }
+            
+            if (atual instanceof Pinky) {
+                Jogo.getObjJogo().remove(atual);
+            }
+            
+            if (atual instanceof Clide) {
+                Jogo.getObjJogo().remove(atual);
+            }
+            
+        }
+        pacman.setVidas(pacman.getVidas()-1);
+        Jogo.getObjJogo().add(new Blinky(160, 192, 16, 16, Objetos.BLINKY));
+        
+        Jogo.getObjJogo().add(new Inky(160, 208, 16, 16, Objetos.INKY));
+        
+        Jogo.getObjJogo().add(new Pinky(176, 208, 16, 16, Objetos.PINKY));
+        
+        Jogo.getObjJogo().add(new Clide(144, 208, 16, 16, Objetos.CLIDE));
+        
+        if(pacman.getVidas() == 0){
+            gameover = true;
+        }
+         
     }
 }
 	
