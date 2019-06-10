@@ -20,6 +20,7 @@ public class Clide extends Fantasma {
 
     public Clide(int x, int y, int width, int height, BufferedImage sprite) {
         super(x, y, width, height, sprite);
+         this.setMask(4, 4, 8, 8);
     }
 
     public void tick() {
@@ -37,7 +38,7 @@ public class Clide extends Fantasma {
         if (x % 16 == 0 && y % 16 == 0) {
             if (new Random().nextInt(100) < 10) {
                 Vector2i start = new Vector2i(((int) (x / 16)), ((int) (y / 16)));
-                Vector2i end = new Vector2i(((int) (Math.floor(new Random().nextInt(Jogo.getPacman().getX() / 16)))), ((int) (Math.floor(new Random().nextInt(Jogo.getPacman().getY() / 16)))));
+                Vector2i end = new Vector2i(((int) (Math.abs(new Random().nextInt(Jogo.getPacman().getX() / 16)))), ((int) (Math.abs(new Random().nextInt(Jogo.getPacman().getY() / 16)))));
                 path = AEstrela.findPath(Jogo.getMapa(), start, end);
             }
         }

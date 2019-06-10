@@ -31,7 +31,7 @@ public class Objetos {
     protected int height;
     public int depth;
     protected List<No> path;
-    private int maskX, maskY, maskW, maskH;
+    protected int maskX, maskY, maskW, maskH;
     private BufferedImage sprite;
 
     public Objetos(int x, int y, int width, int height, BufferedImage sprite) {
