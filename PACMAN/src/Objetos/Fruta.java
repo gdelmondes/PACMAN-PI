@@ -6,7 +6,7 @@ import java.util.Random;
 
 /**
  *
- * @author Guilherme Delmondes
+ * @author GUSTAVO ANDRÉ DE ALMEIDA SANTOS
  */
 public class Fruta extends Objetos {
     

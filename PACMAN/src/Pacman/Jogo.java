@@ -44,6 +44,7 @@ public class Jogo extends Canvas implements Runnable, KeyListener{
     
     private static List<Objetos> objJogo;
     private static List<Fantasma> fantasmas;
+    public static List<Pontos> pontos;
 
     private static Mapa mapa;
     private static Player pacman;
@@ -61,6 +62,7 @@ public class Jogo extends Canvas implements Runnable, KeyListener{
         //INICIALIZANDO OBJETOS
         image = new BufferedImage(largura, altura, BufferedImage.TYPE_INT_RGB);
         objJogo = new ArrayList<>();
+        pontos = new ArrayList<>();
         fantasmas = new ArrayList<>();
         spritesheet = new Spritesheet("/res/spritesheet.png");
         pacman = new Player(0, 0, 16, 16, spritesheet.getSprite(32,0,16,16));
@@ -107,12 +109,17 @@ public class Jogo extends Canvas implements Runnable, KeyListener{
         
         //Randomiza o tempo de -aparecimento- da fruta caso ela já não esteja na lista de obj 
         if(rand.nextInt(3000) < 3 && !objJogo.contains(fruit)){
-            fruit = new Fruta(160, 160, 16, 16, spritesheet.getSprite(16,32,16,16));
+            fruit = new Fruta(160, 160, 16, 16, spritesheet.getSprite(64,32,16,16));
             objJogo.add(fruit);
         }
         //Randomiza o tempo de -desaparecimento- da fruta caso ela esteja na lista de obj
         if(rand.nextInt(2500) < 5 && objJogo.contains(fruit)){
             objJogo.remove(fruit);
+        }
+        
+        if(pontos.isEmpty()){
+            //Passou de fase
+            gameOver();
         }
         }
         
@@ -267,7 +274,7 @@ public class Jogo extends Canvas implements Runnable, KeyListener{
         return mapa;
     }
     
-    public static void GameOver() {
+    public static void gameOver() {
         /*
             Falta resetar os fantasmas e pacman para sua posicao inicial,
             decrementar uma vida
@@ -291,6 +298,8 @@ public class Jogo extends Canvas implements Runnable, KeyListener{
             }
             
         }
+        pacman.setX(160);
+        pacman.setY(240);
         pacman.setVidas(pacman.getVidas()-1);
         Jogo.getObjJogo().add(new Blinky(160, 192, 16, 16, Objetos.BLINKY));
         

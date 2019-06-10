@@ -12,6 +12,9 @@ import java.awt.Graphics;
 /**
  *
  * @author Guilherme
+ * Essa classe foi desenvolvida com base nos nossos conhecimentos adquiridos no PI do semestre passado
+ * E no curso de games da danki code especialmente a aula de setup e graficos onde o professor Guilherme Grillo
+ * Link: https://cursos.dankicode.com/campus/curso-dev-games/setup-e-graficos  
  */
 public class UI {
 

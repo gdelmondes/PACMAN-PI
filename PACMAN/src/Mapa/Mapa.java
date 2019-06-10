@@ -33,15 +33,15 @@ public class Mapa {
             for (int xx = 0; xx < map.getWidth(); xx++) {
                 for (int yy = 0; yy < map.getHeight(); yy++) {
                     int pixelAtual = pixels[xx + (yy * map.getWidth())];
-                    tiles[xx + (yy * WIDTH)] = new Chao(xx * 16, yy * 16, Bloco.TILE_FLOOR);
+                    tiles[xx + (yy * WIDTH)] = new Bloco(xx * 16, yy * 16, Bloco.TILE_FLOOR);
                     switch (pixelAtual) {
                         case 0xFF000000:
                             //Chao
-                            tiles[xx + (yy * WIDTH)] = new Chao(xx * 16, yy * 16, Bloco.TILE_FLOOR);
+                            tiles[xx + (yy * WIDTH)] = new Bloco(xx * 16, yy * 16, Bloco.TILE_FLOOR);
                             break;
                         case 0xFF2636ff:
                             //Bar
-                            tiles[xx + (yy * WIDTH)] = new Chao(xx * 16, yy * 16, Bloco.BAR);
+                            tiles[xx + (yy * WIDTH)] = new Bloco(xx * 16, yy * 16, Bloco.BAR);
                             break;
                         case 0xFF0013FF:
                             //Parede
@@ -83,7 +83,9 @@ public class Mapa {
                             break;
                         case 0xFFffffff:
                             //Pontos
-                            Jogo.getObjJogo().add(new Pontos(xx * 16, yy * 16, 16, 16, Objetos.PONTOS_SPRITE));
+                            Pontos p = new Pontos(xx * 16, yy * 16, 16, 16, Objetos.PONTOS_SPRITE);
+                            Jogo.getObjJogo().add(p);
+                            Jogo.pontos.add(p);
                             break;
                         case 0xFFff4900:
                             //Fruta

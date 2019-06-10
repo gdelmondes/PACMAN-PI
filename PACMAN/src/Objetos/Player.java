@@ -1,6 +1,5 @@
 package Objetos;
 
-import Mapa.Camera;
 import Mapa.Mapa;
 import java.awt.Graphics;
 import Pacman.Jogo;
@@ -15,8 +14,11 @@ public class Player extends Objetos {
 //    private int x;
 //    private int y;
 //    private double velocidadeX = 0.6, velocidadeY = 0.6;
-    private int frame = 0;
+    private int frames = 0, maxFrames = 5, index = 0, maxIndex = 2;
+    private int dir_cima = 1, dir_baixo = 2, dir_esq = 3, dir_dir = 4;
+    private int direct = dir_dir;
     private boolean up, down, right, left;
+    private boolean moved;
     private double velocidade = 1.0;
     private int vidas = 3;
     private int score = 0;
@@ -27,8 +29,35 @@ public class Player extends Objetos {
     private String ant = "";
     private int timer = 0;
 
+    private BufferedImage pacCima[];
+    private BufferedImage pacBaixo[];
+    private BufferedImage pacEsq[];
+    private BufferedImage pacDir[];
+
     public Player(int x, int y, int width, int height, BufferedImage sprite) {
         super(x, y, width, height, sprite);
+
+        pacCima = new BufferedImage[3];
+        pacBaixo = new BufferedImage[3];
+        pacEsq = new BufferedImage[3];
+        pacDir = new BufferedImage[3];
+
+        pacCima[0] = Jogo.spritesheet.getSprite(112, 0, 16, 16);
+        pacCima[1] = Jogo.spritesheet.getSprite(112, 32, 16, 16);
+        pacCima[2] = Jogo.spritesheet.getSprite(64, 0, 16, 16);
+
+        pacBaixo[0] = Jogo.spritesheet.getSprite(64, 16, 16, 16);
+        pacBaixo[1] = Jogo.spritesheet.getSprite(96, 32, 16, 16);
+        pacBaixo[2] = Jogo.spritesheet.getSprite(64, 0, 16, 16);
+
+        pacEsq[0] = Jogo.spritesheet.getSprite(96, 0, 16, 16);
+        pacEsq[1] = Jogo.spritesheet.getSprite(96, 16, 16, 16);
+        pacEsq[2] = Jogo.spritesheet.getSprite(64, 0, 16, 16);
+
+        pacDir[0] = Jogo.spritesheet.getSprite(80, 0, 16, 16);
+        pacDir[1] = Jogo.spritesheet.getSprite(80, 16, 16, 16);
+        pacDir[2] = Jogo.spritesheet.getSprite(64, 0, 16, 16);
+
     }
 
     //Acrescentar aqui, logica para colisao com a pilula de poder e frutas
@@ -72,16 +101,16 @@ public class Player extends Objetos {
                     Jogo.getObjJogo().add(new Clide(160, 200, 16, 16, Objetos.CLIDE));
                 }
             }
-            
-             if (atual instanceof Pinky && bonus) {
+
+            if (atual instanceof Pinky && bonus) {
                 if (Objetos.isColliding(this, atual)) {
                     this.score += 200;
                     Jogo.getObjJogo().remove(atual);
                     Jogo.getObjJogo().add(new Pinky(160, 200, 16, 16, Objetos.PINKY));
                 }
             }
-             
-             if (atual instanceof Inky && bonus) {
+
+            if (atual instanceof Inky && bonus) {
                 if (Objetos.isColliding(this, atual)) {
                     this.score += 200;
                     Jogo.getObjJogo().remove(atual);
@@ -95,7 +124,7 @@ public class Player extends Objetos {
             //Gameover
             if (atual instanceof Fantasma && !bonus) {
                 if (Objetos.isColliding(this, atual)) {
-                    Jogo.GameOver();
+                    Jogo.gameOver();
                 }
             }
         }
@@ -104,6 +133,7 @@ public class Player extends Objetos {
 
     @Override
     public void tick() {
+        moved = false;
 //        if(Mapa.colide((int) (x + velocidadeX),(int) (y + velocidadeY))){
 //            this.x += velocidadeX;
 //            this.y += velocidadeY;
@@ -114,6 +144,8 @@ public class Player extends Objetos {
 //        }
 
         if (left && Mapa.colide((int) (x - velocidade), this.getY())) {
+            moved = true;
+            direct = dir_esq;
             x -= velocidade;
             dirX = -(velocidade * 32);
             dirY = 0;
@@ -126,6 +158,8 @@ public class Player extends Objetos {
             }
         }
         if (right && Mapa.colide((int) (x + velocidade), this.getY())) {
+            moved = true;
+            direct = dir_dir;
             x += velocidade;
             dirX = (velocidade * 32);
             dirY = 0;
@@ -138,6 +172,8 @@ public class Player extends Objetos {
             }
         }
         if (up && Mapa.colide(this.getX(), (int) (y - velocidade))) {
+            moved = true;
+            direct = dir_cima;
             y -= velocidade;
             dirX = 0;
             dirY = -(velocidade * 32);
@@ -150,6 +186,8 @@ public class Player extends Objetos {
             }
         }
         if (down && Mapa.colide(this.getX(), (int) (y + velocidade))) {
+            moved = true;
+            direct = dir_baixo;
             y += velocidade;
             dirX = 0;
             dirY = (velocidade * 32);
@@ -159,6 +197,18 @@ public class Player extends Objetos {
             }
             if (ant.equals("right")) {
                 right = false;
+            }
+        }
+        //Logica para animar o pacman (Extraido da video-aula da DankiCode)
+        //https://cursos.dankicode.com/campus/curso-dev-games/manipulando-direcoes-e-animacoes
+        if (moved) {
+            frames++;
+            if (frames == maxFrames) {
+                frames = 0;
+                index++;
+                if (index > maxIndex) {
+                    index = 0;
+                }
             }
         }
 
@@ -174,37 +224,15 @@ public class Player extends Objetos {
     }
 
     public void render(Graphics g) {
-        if (left) {
-            if (frame % 20 == 0) {
-                g.drawImage(Jogo.spritesheet.getSprite(96, 0, 16, 16), this.getX(), this.getY(), null);
-            } else {
-                g.drawImage(Jogo.spritesheet.getSprite(64, 0, 16, 16), this.getX(), this.getY(), null);
-            }
-        } else if (right) {
-            if (frame % 20 == 0) {
-                g.drawImage(Jogo.spritesheet.getSprite(80, 0, 16, 16), this.getX(), this.getY(), null);
-            } else {
-                g.drawImage(Jogo.spritesheet.getSprite(64, 0, 16, 16), this.getX(), this.getY(), null);
-            }
-        } else if (up) {
-            if (frame % 20 == 0) {
-                g.drawImage(Jogo.spritesheet.getSprite(112, 0, 16, 16), this.getX(), this.getY(), null);
-            } else {
-                g.drawImage(Jogo.spritesheet.getSprite(64, 0, 16, 16), this.getX(), this.getY(), null);
-            }
-        } else if (down) {
-            if (frame % 20 == 0) {
-                g.drawImage(Jogo.spritesheet.getSprite(64, 16, 16, 16), this.getX(), this.getY(), null);
-            } else {
-                g.drawImage(Jogo.spritesheet.getSprite(64, 0, 16, 16), this.getX(), this.getY(), null);
-            }
-        } else {
-            g.drawImage(Jogo.spritesheet.getSprite(64, 0, 16, 16), this.getX(), this.getY(), null);
+        if (direct == dir_cima) {
+            g.drawImage(pacCima[index], this.x, this.y, null);
+        } else if (direct == dir_baixo) {
+            g.drawImage(pacBaixo[index], this.x, this.y, null);
+        } else if (direct == dir_esq) {
+            g.drawImage(pacEsq[index], this.x, this.y, null);
+        } else if (direct == dir_dir) {
+            g.drawImage(pacDir[index], this.x, this.y, null);
         }
-        if (frame > 1000 * 30) {
-            frame = 0;
-        }
-        frame++;
     }
 
 //    public int getX() {
@@ -295,7 +323,5 @@ public class Player extends Objetos {
     public static boolean isBonus() {
         return bonus;
     }
-    
-    
 
 }

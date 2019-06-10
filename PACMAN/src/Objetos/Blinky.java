@@ -8,8 +8,6 @@ package Objetos;
 import Mapa.AEstrela;
 import Mapa.Vector2i;
 import Pacman.Jogo;
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.Random;
@@ -22,6 +20,7 @@ public class Blinky extends Fantasma {
 
     public Blinky(int x, int y, int width, int height, BufferedImage sprite) {
         super(x, y, width, height, sprite);
+       this.setMask(4, 4, 8, 8);
     }
 
     public void tick() {
@@ -41,6 +40,8 @@ public class Blinky extends Fantasma {
             }
         }
     }
+    
+    
 
     public void render(Graphics g) {
         if (Player.isBonus()) {

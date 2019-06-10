@@ -20,6 +20,7 @@ public class Pinky extends Fantasma{
     
     public Pinky(int x, int y, int width, int height, BufferedImage sprite) {
         super(x, y, width, height, sprite);
+         this.setMask(4, 4, 8, 8);
     }
     
     @Override
