@@ -1,7 +1,7 @@
 <h1>PACMAN - PI 3</h1>
 
 <p>Projeto integrador 3 - Jogos digitais SENAC Santo Amaro</p>
-<strong>Grupo:</strong>
+<strong>Grupo:</strong></br>
 Guilherme Melo</br>
 Gustavo André</br>
 Icaro Costa</br></br>
