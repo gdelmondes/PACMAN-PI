@@ -7,6 +7,6 @@ Gustavo André
 Icaro Costa
 
 <strong>Teaser video</strong>
-https://www.youtube.com/watch?v=fjjv75d537A
+https://www.youtube.com/watch?v=fjjv75d537A </br>
 <strong>Trailer</strong>
 https://youtu.be/D2MnTe8mxN8
