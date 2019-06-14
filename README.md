@@ -4,7 +4,7 @@
 <strong>Grupo:</strong>
 Guilherme Melo</br>
 Gustavo André</br>
-Icaro Costa</br>
+Icaro Costa</br></br>
 
 <strong>Teaser video</strong>
 https://www.youtube.com/watch?v=fjjv75d537A </br>
