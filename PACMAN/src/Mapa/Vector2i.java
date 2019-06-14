@@ -1,6 +1,13 @@
 package Mapa;
 
 public class Vector2i {
+    
+    /*
+    Algoritmo da AEstrela usado para a IA (Extraido da video-aula da DankiCode do professor Guilherme Grillo)
+    Classes extraídas que compõem o algoritmo: AEstrela, No, Vector2i.
+    https://cursos.dankicode.com/campus/curso-dev-games/a*-algoritmo
+    https://cursos.dankicode.com/campus/curso-dev-games/aplicando-a*
+    */
 
     public int x,y;
 

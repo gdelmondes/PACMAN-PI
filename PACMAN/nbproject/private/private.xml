@@ -5,17 +5,12 @@
             <url>src/Pacman/Jogo.java</url>
             <bookmark id="1">
                 <name/>
-                <line>280</line>
+                <line>329</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/Users/Guilherme%20Delmondes/Desktop/PACMAN/src/Objetos/Fruta.java</file>
-            <file>file:/C:/Users/Guilherme%20Delmondes/Desktop/PACMAN/src/Pacman/Jogo.java</file>
-            <file>file:/C:/Users/Guilherme%20Delmondes/Desktop/PACMAN/src/Objetos/Player.java</file>
-            <file>file:/C:/Users/Guilherme%20Delmondes/Desktop/PACMAN/src/Mapa/Mapa.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

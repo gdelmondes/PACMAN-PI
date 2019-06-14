@@ -3,7 +3,9 @@ package Objetos;
 import Mapa.Mapa;
 import java.awt.Graphics;
 import Pacman.Jogo;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 /**
  *
@@ -11,9 +13,6 @@ import java.awt.image.BufferedImage;
  */
 public class Player extends Objetos {
 
-//    private int x;
-//    private int y;
-//    private double velocidadeX = 0.6, velocidadeY = 0.6;
     private int frames = 0, maxFrames = 5, index = 0, maxIndex = 2;
     private int dir_cima = 1, dir_baixo = 2, dir_esq = 3, dir_dir = 4;
     private int direct = dir_dir;
@@ -24,10 +23,11 @@ public class Player extends Objetos {
     private int score = 0;
     private double dirX;
     private double dirY;
-    private static boolean bonus = false;
-    private String novo = "";
-    private String ant = "";
-    private int timer = 0;
+    public static boolean bonus = false, shield = false, dormir = false, boost = false;
+    private String novo = ""; //usado para saber o keypressed direção atual do jogador
+    private String ant = ""; //usado para saber o keypressed anterior do jogador
+    private int timer = 0; //usado para controlar o tempo de permanencia do bonus
+    public static String status = "";
 
     private BufferedImage pacCima[];
     private BufferedImage pacBaixo[];
@@ -62,21 +62,49 @@ public class Player extends Objetos {
 
     //Acrescentar aqui, logica para colisao com a pilula de poder e frutas
     public void coletaItem() {
+        //faz um looping para verificar se cada objeto do jogo está colidindo com o player
         for (int i = 0; i < Jogo.getObjJogo().size(); i++) {
             Objetos atual = Jogo.getObjJogo().get(i);
             if (atual instanceof Pontos) {
                 if (Objetos.isColliding(this, atual)) {
                     this.score += 10;
                     Jogo.getObjJogo().remove(atual);
+                    Jogo.pontos.remove(atual);
+                    Som ponto = new Som();
+                    ponto.somPacMan();
                 }
             }
 
+            //bonus da pilula ativo, randomiza o tipo de bonus
             if (atual instanceof Pilula) {
                 if (Objetos.isColliding(this, atual)) {
                     this.score += 10;
-                    bonus = true;
-                    timer = 0;
+                    timer = 0; //seta o tempo que o bonus deve ficar ativo
                     Jogo.getObjJogo().remove(atual);
+                    Som powerup = new Som();
+                    powerup.somFruta();
+                    int rand = new Random().nextInt(4);
+                    switch (rand) {
+                        case 0:
+                            status = "Bonus-on!";
+                            bonus = true;
+                            break;
+                        case 1:
+                            status = "Escudo ativo!";
+                            shield = true;
+                            break;
+                        case 2:
+                            status = "Paralizar!";
+                            dormir = true;
+                            break;
+                        case 3:
+                            status = "Velocidade +";
+                            boost = true;
+                            break;
+                        default:
+                            break;
+                    }
+
                 }
             }
 
@@ -84,11 +112,15 @@ public class Player extends Objetos {
                 if (Objetos.isColliding(this, atual)) {
                     this.score += 100;
                     Jogo.getObjJogo().remove(atual);
+                    Som fruta = new Som();
+                    fruta.somFruta();
                 }
             }
 
             if (atual instanceof Blinky && bonus) {
                 if (Objetos.isColliding(this, atual)) {
+                    Som come = new Som();
+                    come.somFruta();
                     this.score += 200;
                     Jogo.getObjJogo().remove(atual);
                     Jogo.getObjJogo().add(new Blinky(160, 200, 16, 16, Objetos.BLINKY));
@@ -96,6 +128,8 @@ public class Player extends Objetos {
             }
             if (atual instanceof Clide && bonus) {
                 if (Objetos.isColliding(this, atual)) {
+                    Som come = new Som();
+                    come.somFruta();
                     this.score += 200;
                     Jogo.getObjJogo().remove(atual);
                     Jogo.getObjJogo().add(new Clide(160, 200, 16, 16, Objetos.CLIDE));
@@ -104,6 +138,8 @@ public class Player extends Objetos {
 
             if (atual instanceof Pinky && bonus) {
                 if (Objetos.isColliding(this, atual)) {
+                    Som come = new Som();
+                    come.somFruta();
                     this.score += 200;
                     Jogo.getObjJogo().remove(atual);
                     Jogo.getObjJogo().add(new Pinky(160, 200, 16, 16, Objetos.PINKY));
@@ -112,21 +148,37 @@ public class Player extends Objetos {
 
             if (atual instanceof Inky && bonus) {
                 if (Objetos.isColliding(this, atual)) {
+                    Som come = new Som();
+                    come.somFruta();
                     this.score += 200;
                     Jogo.getObjJogo().remove(atual);
                     Jogo.getObjJogo().add(new Inky(160, 200, 16, 16, Objetos.INKY));
                 }
             }
-            if (timer >= 80) {
+            if (timer >= 60 * 6) { //controla o tempo de bonus ativo
+                //Reseta buffs
                 bonus = false;
+                boost = false;
+                dormir = false;
+                shield = false;
             }
 
             //Gameover
             if (atual instanceof Fantasma && !bonus) {
                 if (Objetos.isColliding(this, atual)) {
+                    if (shield) {//Verifica se o escudo está ativo
+                        continue;
+                    }
+                    Som morte = new Som();
+                    morte.somGameOver();
                     Jogo.gameOver();
                 }
-            }
+            }//else if(atual instanceof Fantasma && !shield) {
+            //if (Objetos.isColliding(this, atual)) {
+            //  Jogo.gameOver();
+            //}
+            //}
+
         }
         timer++;
     }
@@ -134,22 +186,22 @@ public class Player extends Objetos {
     @Override
     public void tick() {
         moved = false;
-//        if(Mapa.colide((int) (x + velocidadeX),(int) (y + velocidadeY))){
-//            this.x += velocidadeX;
-//            this.y += velocidadeY;
-//        }
-//        if(Mapa.colide((int) (x + velocidadeX),(int) (y + velocidadeY))){
-//            this.x += velocidadeX;
-//            this.y += velocidadeY;
-//        }
 
+        //Checa os booleanos de direção e colisão se o caminho estiver livre o pacman anda naquela direção true
+        //strings novo e ant servem para definir a proxima direção antes dela estar livre, e setar os booleanos para false
         if (left && Mapa.colide((int) (x - velocidade), this.getY())) {
             moved = true;
             direct = dir_esq;
+            if (boost) {
+                velocidade = 1.2;//Boost de velocidade
+            } else {
+                velocidade = 1.0;
+            }
             x -= velocidade;
             dirX = -(velocidade * 32);
             dirY = 0;
 
+            //seta a direção anterior para false caso esteja percorrendo uma direção válida
             if (ant.equals("up")) {
                 up = false;
             }
@@ -160,10 +212,16 @@ public class Player extends Objetos {
         if (right && Mapa.colide((int) (x + velocidade), this.getY())) {
             moved = true;
             direct = dir_dir;
+            if (boost) {
+                velocidade = 1.2;//Boost de velocidade
+            } else {
+                velocidade = 1.0;
+            }
             x += velocidade;
             dirX = (velocidade * 32);
             dirY = 0;
 
+            //seta a direção anterior para false caso esteja percorrendo uma direção válida
             if (ant.equals("up")) {
                 up = false;
             }
@@ -174,10 +232,17 @@ public class Player extends Objetos {
         if (up && Mapa.colide(this.getX(), (int) (y - velocidade))) {
             moved = true;
             direct = dir_cima;
+            if (boost) {
+                velocidade = 1.2;//Boost de velocidade
+            } else {
+                velocidade = 1.0;
+            }
             y -= velocidade;
+
             dirX = 0;
             dirY = -(velocidade * 32);
 
+            //seta a direção anterior para false caso esteja percorrendo uma direção válida
             if (ant.equals("left")) {
                 left = false;
             }
@@ -188,10 +253,16 @@ public class Player extends Objetos {
         if (down && Mapa.colide(this.getX(), (int) (y + velocidade))) {
             moved = true;
             direct = dir_baixo;
+            if (boost) {
+                velocidade = 1.2;//Boost de velocidade
+            } else {
+                velocidade = 1.0;
+            }
             y += velocidade;
             dirX = 0;
             dirY = (velocidade * 32);
 
+            //seta a direção anterior para false caso esteja percorrendo uma direção válida
             if (ant.equals("left")) {
                 left = false;
             }
@@ -224,7 +295,7 @@ public class Player extends Objetos {
     }
 
     public void render(Graphics g) {
-        if (direct == dir_cima) {
+        if (direct == dir_cima) {//Verifica qual direção o pacman esta andando
             g.drawImage(pacCima[index], this.x, this.y, null);
         } else if (direct == dir_baixo) {
             g.drawImage(pacBaixo[index], this.x, this.y, null);
@@ -233,37 +304,12 @@ public class Player extends Objetos {
         } else if (direct == dir_dir) {
             g.drawImage(pacDir[index], this.x, this.y, null);
         }
+        if (shield) {
+            g.setColor(Color.CYAN);
+            g.drawOval(this.x - 8, this.y - 8, 32, 32);//Escudo
+        }
     }
 
-//    public int getX() {
-//        return x;
-//    }
-//    public double getVelocidadeX() {
-//        return velocidadeX;
-//    }
-//
-//    public void setVelocidadeX(double velocidadeX) {
-//        this.velocidadeX = velocidadeX;
-//    }
-//
-//    public double getVelocidadeY() {
-//        return velocidadeY;
-//    }
-//
-//    public void setVelocidadeY(double velocidadeY) {
-//        this.velocidadeY = velocidadeY;
-//    }
-//    public void setX(int x) {
-//        this.x = x;
-//    }
-//
-//    public int getY() {
-//        return y;
-//    }
-//
-//    public void setY(int y) {
-//        this.y = y;
-//    }
     public int getScore() {
         return score;
     }

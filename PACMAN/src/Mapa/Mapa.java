@@ -1,15 +1,20 @@
 package Mapa;
 
+import Graficos.Spritesheet;
 import Objetos.*;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import Pacman.Jogo;
+import static Pacman.Jogo.spritesheet;
+import java.util.ArrayList;
 
 /**
  *
  * @author Guilherme Delmondes
+ * Classe extraída do curso de Guilherme Grillo da DankiCode
+ * Link: https://cursos.dankicode.com/campus/curso-dev-games/tiles-e-validando-posicoes
  */
 public class Mapa {
 
@@ -24,16 +29,19 @@ public class Mapa {
     public Mapa(String path) {
         try {
             BufferedImage map = ImageIO.read(getClass().getResource(path));
-            int[] pixels = new int[map.getWidth() * map.getHeight()];
+            int[] pixels = new int[map.getWidth() * map.getHeight()]; //vetor que ira conter todos os pixels do mapa
             WIDTH = map.getWidth();
             HEIGHT = map.getHeight();
-            tiles = new Bloco[pixels.length];
-            map.getRGB(0, 0, map.getWidth(), map.getHeight(), pixels, 0, map.getWidth());
+            tiles = new Bloco[pixels.length]; //ira conter todos os tiles do mapa
+            map.getRGB(0, 0, map.getWidth(), map.getHeight(), pixels, 0, map.getWidth()); //coloca os pixels no vetor
 
+            //loop para ler pixel por pixel
             for (int xx = 0; xx < map.getWidth(); xx++) {
                 for (int yy = 0; yy < map.getHeight(); yy++) {
                     int pixelAtual = pixels[xx + (yy * map.getWidth())];
+                    //por padrão ele irá colocar o floor em todos os tiles
                     tiles[xx + (yy * WIDTH)] = new Bloco(xx * 16, yy * 16, Bloco.TILE_FLOOR);
+                    //caso o pixel atual seja igual a uma cor espeficica, ele cria um tile especifico
                     switch (pixelAtual) {
                         case 0xFF000000:
                             //Chao
@@ -107,17 +115,21 @@ public class Mapa {
 
     }
 
-    /*public static void restartGame(String level) {
-        entities = new ArrayList<Entity>();
-        enemies = new ArrayList<Enemy>();
+    public static void restartGame(String level) { //Reseta todas as variaveis para iniciar um novo Jogo
+        Jogo.setObjJogo(new ArrayList<>());
+        Jogo.setFantasmas(new ArrayList<>());
+        Jogo.setPontos(new ArrayList<>());
         spritesheet = new Spritesheet("/res/spritesheet.png");
-        player = new Player(0, 0, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
-        entities.add(player);
-        world = new World("/res/" + level);
+        Player pacman = new Player(0, 0, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
+        Jogo.setPacman(pacman);
+        Jogo.getObjJogo().add(pacman);
+        Jogo.setMapa( new Mapa("/res/level1.png"));
+        Jogo.gameover = false;
         return;
     }
-     */
+     
 
+   //verifica a colisao com o cenário
    public static boolean colide(int xNext, int yNext) {
         int x1 = xNext / TILE_SIZE;
         int y1 = yNext / TILE_SIZE;

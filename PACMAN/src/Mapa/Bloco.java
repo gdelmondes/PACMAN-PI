@@ -23,7 +23,7 @@ public class Bloco {
 
     //Renderiza todos os tiles do mapa
     public void render(Graphics g){
-        g.drawImage(sprite, x - Camera.x, y - Camera.y, null);
+        g.drawImage(sprite, x, y, null);
     }
     
     public int getX() {

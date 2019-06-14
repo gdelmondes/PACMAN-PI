@@ -7,6 +7,8 @@ import javax.imageio.ImageIO;
 /**
  *
  * @author Guilherme Delmondes
+ * Extraído do curso de Guilherme Grillo da DankiCode
+ * Link: https://cursos.dankicode.com/campus/curso-dev-games/classe-spritesheet-player-e-entity
  */
 public class Spritesheet {
 
@@ -21,6 +23,7 @@ public class Spritesheet {
 
     }
 
+    //retorna uma das sprites do spritesheet apartir da localização x e y, em pixels, da sprite
     public BufferedImage getSprite(int x, int y, int width, int height) {
         return spritesheet.getSubimage(x, y, width, height);
     }

@@ -15,6 +15,9 @@ import java.util.Random;
 /**
  *
  * @author Guilherme Delmondes
+ * Método tick() (AEstrela) extraído do curso de Guilherme Grillo da DankiCode:
+ * https://cursos.dankicode.com/campus/curso-dev-games/a*-algoritmo
+   https://cursos.dankicode.com/campus/curso-dev-games/aplicando-a*
  */
 public class Clide extends Fantasma {
 
@@ -25,6 +28,7 @@ public class Clide extends Fantasma {
 
     public void tick() {
         depth = 0;
+        if(!Player.dormir){
         if (path == null || path.size() == 0) {
             Vector2i start = new Vector2i(((int) (x / 16)), ((int) (y / 16)));
             Vector2i end = new Vector2i(((int) (Jogo.getPacman().getX() / 16)), ((int) (Jogo.getPacman().getY() / 16)));
@@ -38,9 +42,15 @@ public class Clide extends Fantasma {
         if (x % 16 == 0 && y % 16 == 0) {
             if (new Random().nextInt(100) < 10) {
                 Vector2i start = new Vector2i(((int) (x / 16)), ((int) (y / 16)));
-                Vector2i end = new Vector2i(((int) (Math.abs(new Random().nextInt(Jogo.getPacman().getX() / 16)))), ((int) (Math.abs(new Random().nextInt(Jogo.getPacman().getY() / 16)))));
+                //Vector2i end = new Vector2i(((int) (new Random().nextInt(Math.abs(Jogo.getPacman().getX() / 16)))), ((int) (new Random().nextInt(Math.abs(Jogo.getPacman().getY()) / 16)))));
+                int rand = new Random().nextInt(Math.abs(Jogo.getPacman().getX())/16);
+                if(rand < 0){
+                    rand = Math.abs(rand);
+                }
+                Vector2i end = new Vector2i((int )rand,(int)(new Random().nextInt(Jogo.getPacman().getY()/16)));
                 path = AEstrela.findPath(Jogo.getMapa(), start, end);
             }
+        }
         }
     }
 

@@ -1,6 +1,5 @@
 package Objetos;
 
-import Mapa.Camera;
 import Mapa.No;
 import Mapa.Vector2i;
 import Pacman.Jogo;
@@ -14,6 +13,9 @@ import java.util.List;
 /**
  *
  * @author Guilherme Delmondes
+ * Método followPath  e Comparator extraído do curso de Guilherme Grillo da DankiCode
+ * https://cursos.dankicode.com/campus/curso-dev-games/a*-algoritmo
+ * https://cursos.dankicode.com/campus/curso-dev-games/aplicando-a*
  */
 public class Objetos {
 
@@ -74,21 +76,22 @@ public class Objetos {
     public void tick() {}
     
     public void followPath(List<No> path) {
+        //achou um caminho
         if(path != null) {
-            if(path.size() > 0) {
-                Vector2i target = path.get(path.size() - 1).tile;
+            if(path.size() > 0) { //tem caminho pra percorrer
+                Vector2i target = path.get(path.size() - 1).tile; //pega o ultimo item da lista
                 //xprev = x;
                 //yprev = y;
                 if(x < target.x * 16) {
-                    x++;
+                    x+= 1;
                 }else if(x > target.x * 16) {
-                    x--;
+                    x-= 1;
                 }
 
                 if(y < target.y * 16) {
-                    y++;
+                    y+= 1;
                 }else if(y > target.y * 16) {
-                    y--;
+                    y-= 1;
                 }
 
                 if(x == target.x * 16 && y == target.y * 16) {
@@ -99,7 +102,7 @@ public class Objetos {
     }
     
     public void render(Graphics g) {
-        g.drawImage(sprite, this.getX() - Camera.x,this.getY() - Camera.y, null);
+        g.drawImage(sprite, this.getX(),this.getY(), null);
     }
 
     public void setX(int x) {

@@ -15,6 +15,9 @@ import java.util.Random;
 /**
  *
  * @author Guilherme Delmondes
+ * Método tick() (AEstrela) extraído do curso de Guilherme Grillo da DankiCode:
+ * https://cursos.dankicode.com/campus/curso-dev-games/a*-algoritmo
+   https://cursos.dankicode.com/campus/curso-dev-games/aplicando-a*
  */
 public class Pinky extends Fantasma{
     
@@ -26,6 +29,7 @@ public class Pinky extends Fantasma{
     @Override
     public void tick() {
         depth=0;
+        if(!Player.dormir){
         if(path == null || path.size() == 0) {
             Vector2i start = new Vector2i(((int)(x/16)),((int)(y/16)));
             Vector2i end = new Vector2i(((int)((Jogo.getPacman().getX()+Jogo.getPacman().getDirX())/16)),((int)((Jogo.getPacman().getY()+Jogo.getPacman().getDirY())/16)));
@@ -40,9 +44,10 @@ public class Pinky extends Fantasma{
                 path = AEstrela.findPath(Jogo.getMapa(), start, end);
             }
         }
-        
+        }
     }
     
+        //faz a animação se o bonus da pilula tiver ativo
         public void render(Graphics g) {
         if (Player.isBonus()) {
             g.drawImage(Jogo.spritesheet.getSprite(0, 16, 16, 16), this.getX(), this.getY(), null);

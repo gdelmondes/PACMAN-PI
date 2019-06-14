@@ -15,6 +15,9 @@ import java.util.Random;
 /**
  *
  * @author Guilherme Delmondes
+ * Método tick() (AEstrela) extraído do curso de Guilherme Grillo da DankiCode:
+ * https://cursos.dankicode.com/campus/curso-dev-games/a*-algoritmo
+   https://cursos.dankicode.com/campus/curso-dev-games/aplicando-a*
  */
 public class Blinky extends Fantasma {
 
@@ -25,6 +28,7 @@ public class Blinky extends Fantasma {
 
     public void tick() {
         depth = 0;
+        if(!Player.dormir){
         if (path == null || path.size() == 0) {
             Vector2i start = new Vector2i(((int) (x / 16)), ((int) (y / 16)));
             Vector2i end = new Vector2i(((int) (Jogo.getPacman().getX() / 16)), ((int) (Jogo.getPacman().getY() / 16)));
@@ -38,6 +42,7 @@ public class Blinky extends Fantasma {
                 Vector2i end = new Vector2i(((int) (Jogo.getPacman().getX() / 16)), ((int) (Jogo.getPacman().getY() / 16)));
                 path = AEstrela.findPath(Jogo.getMapa(), start, end);
             }
+        }
         }
     }
     
