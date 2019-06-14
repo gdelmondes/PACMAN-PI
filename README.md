@@ -2,9 +2,9 @@
 
 <p>Projeto integrador 3 - Jogos digitais SENAC Santo Amaro</p>
 <strong>Grupo:</strong>
-Guilherme Melo
-Gustavo André
-Icaro Costa
+Guilherme Melo</br>
+Gustavo André</br>
+Icaro Costa</br>
 
 <strong>Teaser video</strong>
 https://www.youtube.com/watch?v=fjjv75d537A </br>
